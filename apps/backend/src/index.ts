@@ -1,9 +1,8 @@
-// --- 1. IMPORTS ---
+import { PrismaClient } from "@prisma/client";
 import cors from "cors";
-import dotenv from "dotenv";
+import "dotenv/config";
 import express, { NextFunction, Request, Response } from "express";
-// --- 2. CONSTANTS / CONFIG ---
-dotenv.config();
+
 const app = express();
 const PORT = process.env.PORT || 5000;
 const prisma = new PrismaClient();
@@ -14,7 +13,6 @@ app.use(express.json());
 
 // --- 4. MAIN ROUTES ---
 
-// --- 5. GLOBAL ERROR HANDLING ---
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   console.error(`[Server Error]: ${err.message}`);
   res.status(500).json({
@@ -26,15 +24,13 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   });
 });
 
-// --- 6. EXPORTS / LISTEN ---
 app.listen(PORT, async () => {
-  console.log(`🚀 Server đang chạy tại: http://localhost:${PORT}`);
+  console.log(`The server is running at: http://localhost:${PORT}`);
 
   try {
-    // Ép Prisma kết nối ngay lập tức để test
     await prisma.$connect();
-    console.log("✅ Prisma đã kết nối thành công tới Prisma Postgres Cloud!");
+    console.log("Prisma has successfully connected to the Supabase Database!");
   } catch (e) {
-    console.error("❌ Lỗi kết nối Prisma:", e);
+    console.error("Prisma connection error:", e);
   }
 });

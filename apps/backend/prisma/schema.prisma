@@ -1,13 +1,13 @@
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-}
-
 generator client {
   provider = "prisma-client-js"
 }
 
-// 1. Config enum
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
 enum DepartmentEnum {
   Engineering
   Product
@@ -37,50 +37,49 @@ enum ExpLevelEnum {
 }
 
 enum LocationEnum {
-  Ha_Noi
-  Ho_Chi_Minh
-  Hai_Phong
-  Da_Nang
+  HaNoi
+  HoChiMinh
+  HaiPhong
+  DaNang
   Hue
-  Can_Tho
-  Thai_Nguyen
-  Phu_Tho
-  Lao_Cai
-  Tuyen_Quang
-  Lai_Chau
-  Dien_Bien
-  Son_La
-  Quang_Ninh
-  Hung_Yen
-  Ninh_Binh
-  Thanh_Hoa
-  Nghe_An
-  Ha_Tinh
-  Quang_Binh
-  Quang_Tri
-  Quang_Nam
-  Quang_Ngai
-  Khanh_Hoa
-  Gia_Lai
-  Dak_Lak
-  Lam_Dong
-  Dong_Nai
-  Ba_Ria_Vung_Tau
-  Tay_Ninh
-  Long_An
-  Dong_Thap
-  An_Giang
-  Kien_Giang
-  Ca_Mau
+  CanTho
+  ThaiNguyen
+  PhuTho
+  LaoCai
+  TuyenQuang
+  LaiChau
+  DienBien
+  SonLa
+  QuangNinh
+  HungYen
+  NinhBinh
+  ThanhHoa
+  NgheAn
+  HaTinh
+  QuangBinh
+  QuangTri
+  QuangNam
+  QuangNgai
+  KhanhHoa
+  GiaLai
+  DakLak
+  LamDong
+  DongNai
+  BaRiaVungTau
+  TayNinh
+  LongAn
+  DongThap
+  AnGiang
+  KienGiang
+  CaMau
 }
 
 enum QuestionTypeEnum {
-  Techinical
+  Technical
   Behavioral
   Scenario
 }
 
-// 2. Tables
 model Company {
   id          String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   name        String           @db.VarChar(255)
@@ -93,20 +92,25 @@ model Company {
 }
 
 model JobDescription {
-  id        String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  companyId String  @map("company_id") @db.Uuid
-  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
 
+  // Recruitment Information
   jobTitle        String         @map("job_title") @db.VarChar(255)
   department      DepartmentEnum
   experienceLevel ExpLevelEnum   @map("experience_level")
   employmentType  EmpTypeEnum    @map("employment_type")
   location        LocationEnum
+  companyId       String         @map("company_id") @db.Uuid
+  company         Company        @relation(fields: [companyId], references: [id], onDelete: Cascade)
   requiredSkills  String[]       @map("required_skills")
   benefits        String[]       @default([])
 
-  aboutCompanyGenerated String @map("about_company_generated") @db.Text
-  jobSummaryGenerated   String @map("job_summary_generated") @db.Text
+  // AI Generated Result
+  aboutCompanyGenerated String   @map("about_company_generated") @db.Text
+  jobSummaryGenerated   String   @map("job_summary_generated") @db.Text
+  responsibilities      String[] @map("responsibilities") // at least 5
+  requirementsGenerated String[] @map("requirements_generated") // at least 5
+  niceToHaveGenerated   String[] @map("nice_to_have_generated") // at least 3
 
   interviewQuestions InterviewQuestion[]
 
