@@ -1,0 +1,130 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// 1. Config enum
+enum DepartmentEnum {
+  Engineering
+  Product
+  Design
+  Data
+  QualityAssurance
+  DevOps
+  Security
+}
+
+enum EmpTypeEnum {
+  FullTime
+  PartTime
+  Contract
+  Freelance
+  Internship
+}
+
+enum ExpLevelEnum {
+  Intern
+  Fresher
+  Junior
+  MidLevel
+  Senior
+  Leader
+  Manager
+}
+
+enum LocationEnum {
+  Ha_Noi
+  Ho_Chi_Minh
+  Hai_Phong
+  Da_Nang
+  Hue
+  Can_Tho
+  Thai_Nguyen
+  Phu_Tho
+  Lao_Cai
+  Tuyen_Quang
+  Lai_Chau
+  Dien_Bien
+  Son_La
+  Quang_Ninh
+  Hung_Yen
+  Ninh_Binh
+  Thanh_Hoa
+  Nghe_An
+  Ha_Tinh
+  Quang_Binh
+  Quang_Tri
+  Quang_Nam
+  Quang_Ngai
+  Khanh_Hoa
+  Gia_Lai
+  Dak_Lak
+  Lam_Dong
+  Dong_Nai
+  Ba_Ria_Vung_Tau
+  Tay_Ninh
+  Long_An
+  Dong_Thap
+  An_Giang
+  Kien_Giang
+  Ca_Mau
+}
+
+enum QuestionTypeEnum {
+  Techinical
+  Behavioral
+  Scenario
+}
+
+// 2. Tables
+model Company {
+  id          String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name        String           @db.VarChar(255)
+  description String           @db.Text
+  jobs        JobDescription[]
+  createdAt   DateTime         @default(now()) @map("created_at")
+  updatedAt   DateTime         @updatedAt @map("updated_at")
+
+  @@map("companies")
+}
+
+model JobDescription {
+  id        String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  companyId String  @map("company_id") @db.Uuid
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  jobTitle        String         @map("job_title") @db.VarChar(255)
+  department      DepartmentEnum
+  experienceLevel ExpLevelEnum   @map("experience_level")
+  employmentType  EmpTypeEnum    @map("employment_type")
+  location        LocationEnum
+  requiredSkills  String[]       @map("required_skills")
+  benefits        String[]       @default([])
+
+  aboutCompanyGenerated String @map("about_company_generated") @db.Text
+  jobSummaryGenerated   String @map("job_summary_generated") @db.Text
+
+  interviewQuestions InterviewQuestion[]
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  @@map("job_descriptions")
+}
+
+model InterviewQuestion {
+  id               String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  jobDescriptionId String         @map("job_description_id") @db.Uuid
+  jobDescription   JobDescription @relation(fields: [jobDescriptionId], references: [id], onDelete: Cascade)
+
+  type         QuestionTypeEnum
+  questionText String           @map("question_text") @db.Text
+  createdAt    DateTime         @default(now()) @map("created_at")
+
+  @@map("interview_questions")
+}
