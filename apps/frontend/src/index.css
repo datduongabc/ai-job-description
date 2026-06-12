@@ -1,0 +1,46 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@import "@fontsource-variable/inter";
+
+@utility form-label {
+  @apply text-xs font-bold text-slate-700 uppercase tracking-wide block mb-1.5;
+}
+
+@utility form-control {
+  @apply w-full px-3.5 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg
+         outline-none transition-all text-slate-800 placeholder:text-slate-400
+         focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500;
+}
+
+@utility stacked-tag-box {
+  @apply flex flex-col gap-2.5 p-3 bg-slate-50 border border-slate-200 rounded-lg
+         transition-all focus-within:ring-2 focus-within:ring-indigo-500/20 focus-within:border-indigo-500;
+}
+
+@utility tag-badge-base {
+  @apply inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-md border;
+}
+
+@utility tag-badge-indigo {
+  @apply tag-badge-base bg-indigo-50 text-indigo-700 border-indigo-100;
+}
+
+@utility tag-badge-emerald {
+  @apply tag-badge-base bg-emerald-50 text-emerald-700 border-emerald-100;
+}
+
+@utility tag-close-btn {
+  @apply text-slate-400 hover:text-slate-900 font-bold text-sm leading-none cursor-pointer transition-colors;
+}
+
+@utility tag-input-field {
+  @apply w-full bg-transparent border-t border-slate-200/60 pt-2.5 outline-none
+         text-sm text-slate-800 placeholder:text-slate-400;
+}
+
+@utility btn-primary {
+  @apply mt-2 w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 px-4
+         rounded-xl shadow-md transition-all flex items-center justify-center gap-2 text-sm
+         cursor-pointer active:scale-[0.98] disabled:bg-slate-300 disabled:cursor-not-allowed;
+}
