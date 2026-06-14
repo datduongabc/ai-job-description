@@ -5,7 +5,7 @@ export const DEPARTMENTS: SelectOption[] = [
   { value: "Product", label: "Product" },
   { value: "Design", label: "Design" },
   { value: "Data", label: "Data" },
-  { value: "QA", label: "Quality Assurance" },
+  { value: "QualityAssurance", label: "Quality Assurance" },
   { value: "DevOps", label: "DevOps" },
   { value: "Security", label: "Security" },
 ];
