@@ -47,15 +47,16 @@ export default function App() {
                 />
               </div>
 
-              {/* Company Name */}
+              {/* Department */}
               <div className="flex flex-col">
-                <label className="form-label">Company Name</label>
-                <input
-                  type="text"
-                  placeholder="e.g., ABC Software"
-                  className="form-control"
-                  required
-                />
+                <label className="form-label">Department</label>
+                <select className="form-control">
+                  {DEPARTMENTS.map((opt) => (
+                    <option key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </option>
+                  ))}
+                </select>
               </div>
 
               {/* Employment Type */}
@@ -70,33 +71,9 @@ export default function App() {
                 </select>
               </div>
 
-              {/* Location */}
-              <div className="flex flex-col">
-                <label className="form-label">Work Location</label>
-                <select className="form-control">
-                  {LOCATIONS.map((opt) => (
-                    <option key={opt.value} value={opt.value}>
-                      {opt.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Department */}
-              <div className="flex flex-col">
-                <label className="form-label">Department</label>
-                <select className="form-control">
-                  {DEPARTMENTS.map((opt) => (
-                    <option key={opt.value} value={opt.value}>
-                      {opt.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
               {/* Experience Level */}
-              <div className="flex flex-col md:col-span-2">
-                <label className="form-label">Required Experience Level</label>
+              <div className="flex flex-col">
+                <label className="form-label">Experience Level</label>
                 <select className="form-control">
                   {EXPERIENCE_LEVELS.map((opt) => (
                     <option key={opt.value} value={opt.value}>
@@ -105,6 +82,29 @@ export default function App() {
                   ))}
                 </select>
               </div>
+
+              {/* Location */}
+              <div className="flex flex-col">
+                <label className="form-label">Location</label>
+                <select className="form-control">
+                  {LOCATIONS.map((opt) => (
+                    <option key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            {/* Company Name */}
+            <div className="flex flex-col">
+              <label className="form-label">Company Name</label>
+              <input
+                type="text"
+                placeholder="e.g., ABC Software"
+                className="form-control"
+                required
+              />
             </div>
 
             {/* Company Description */}
