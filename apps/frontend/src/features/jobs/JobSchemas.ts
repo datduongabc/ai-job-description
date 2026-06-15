@@ -31,7 +31,7 @@ export const jobRecruitmentSchema = z.object({
 
   requiredSkills: z.array(z.string()).min(1, "Please add at least 1 skill"), // tối thiểu 1 skills
 
-  benefits: z.array(z.string()).default([]), // optinal field
+  benefits: z.array(z.string()), // optinal field
 });
 
-export type JobRecruitmentInput = z.input<typeof jobRecruitmentSchema>;
+export type JobRecruitmentInput = z.infer<typeof jobRecruitmentSchema>;

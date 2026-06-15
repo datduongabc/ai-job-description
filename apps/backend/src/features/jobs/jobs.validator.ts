@@ -62,4 +62,4 @@ export const generateJobSchema = z.object({
   benefits: z.array(z.string().trim()).default([]),
 });
 
-export type GenerateJobPayload = z.infer<typeof generateJobSchema>;
+export type JobRecruitmentInput = z.infer<typeof generateJobSchema>;

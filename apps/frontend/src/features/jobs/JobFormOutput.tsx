@@ -1,0 +1,88 @@
+import { Copy } from "lucide-react";
+
+export function JobFormOutput() {
+  return (
+    <section className="bg-white border border-slate-200 rounded-2xl p-5 lg:p-6 shadow-xs flex flex-col gap-5 min-h-125">
+      <div className="border-b border-slate-100 pb-3 flex items-center justify-between">
+        <h2 className="text-sm font-bold text-slate-800 uppercase tracking-wider">
+          Kết quả khởi tạo bài đăng
+        </h2>
+        <button className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-md transition-all cursor-pointer">
+          <Copy size={14} /> Copy Job Description
+        </button>
+      </div>
+
+      {/* DỮ LIỆU HIỂN THỊ CHI TIẾT VĂN BẢN (WHITE-SPACE PRESERVED) */}
+      <div className="flex-1 flex flex-col gap-5 text-sm text-slate-700 leading-relaxed overflow-y-auto max-h-[calc(100vh-180px)] pr-1">
+        {/* 1. Vị trí Header */}
+        <div className="border-b border-slate-100 pb-3">
+          <h3 className="text-lg font-black text-indigo-700">
+            SENIOR BACKEND DEVELOPER
+          </h3>
+          <p className="text-xs text-slate-400 font-medium mt-1">
+            🏢 ABC Software • 📍 Hồ Chí Minh • 📁 Engineering
+          </p>
+        </div>
+
+        {/* 2. Khối nội dung About Company */}
+        <div className="flex flex-col gap-1">
+          <h4 className="font-bold text-slate-900 border-l-4 border-indigo-600 pl-2">
+            About Company
+          </h4>
+          <p className="text-slate-600 bg-slate-50 p-3 rounded-lg border border-slate-100 whitespace-pre-line">
+            ABC Software là một doanh nghiệp hàng đầu chuyên phát triển các nền
+            tảng phần mềm dạng dịch vụ (SaaS ERP) phục vụ cho các tập đoàn đa
+            quốc gia...
+          </p>
+        </div>
+
+        {/* 3. Khối nội dung Trách nhiệm */}
+        <div className="flex flex-col gap-1">
+          <h4 className="font-bold text-slate-900 border-l-4 border-indigo-600 pl-2">
+            Key Responsibilities
+          </h4>
+          <ul className="list-disc pl-5 space-y-1 text-slate-600">
+            <li>
+              Thiết kế và tối ưu hóa hệ thống cơ sở dữ liệu lớn sử dụng
+              PostgreSQL.
+            </li>
+            <li>
+              Xây dựng hệ thống các RESTful API hiệu năng cao bằng Node.js.
+            </li>
+            <li>
+              Đảm bảo tính sẵn sàng và khả năng mở rộng của dịch vụ trên hạ tầng
+              AWS.
+            </li>
+          </ul>
+        </div>
+
+        {/* 4. Khối nội dung Bonus: Bộ câu hỏi phỏng vấn */}
+        <div className="bg-emerald-50/50 border border-emerald-100 rounded-xl p-4 flex flex-col gap-3 mt-2">
+          <h4 className="font-extrabold text-emerald-800 uppercase tracking-wider flex items-center gap-2 text-xs">
+            🎯 Bonus Assignment: Gợi ý câu hỏi phỏng vấn
+          </h4>
+          <div className="space-y-2 text-xs">
+            <div>
+              <h5 className="font-bold text-slate-800 mb-0.5">
+                💻 Technical Questions
+              </h5>
+              <p className="text-slate-600 pl-3">
+                1. Phân biệt cơ chế xử lý bất đồng bộ giữa Event Loop của
+                Node.js và Worker Threads?
+              </p>
+            </div>
+            <div>
+              <h5 className="font-bold text-slate-800 mb-0.5">
+                🧠 Behavioral Questions
+              </h5>
+              <p className="text-slate-600 pl-3">
+                1. Kể lại một tình huống bạn và Tech Lead bất đồng quan điểm về
+                mặt giải pháp kiến trúc?
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
