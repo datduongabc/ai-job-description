@@ -1,10 +1,10 @@
 import { PrismaClient } from "@prisma/client";
-import type { GenerateJobPayload } from "./jobs.validator.js";
+import { JobRecruitmentInput } from "./jobs.validator.js";
 import { generateJobMetadata } from "./providers/gemini.provider.js";
 
 const prisma = new PrismaClient();
 
-export async function createAIGeneratedJob(payload: GenerateJobPayload) {
+export async function createAIGeneratedJob(payload: JobRecruitmentInput) {
   const aiOutput = await generateJobMetadata(payload);
 
   return await prisma.$transaction(async (tx) => {
@@ -47,7 +47,7 @@ export async function createAIGeneratedJob(payload: GenerateJobPayload) {
         data: aiOutput.interviewQuestions.map((q) => ({
           jobDescriptionId: newJob.id,
           type: q.type,
-          questionText: q.question,
+          questionText: q.questionText,
         })),
       });
     }

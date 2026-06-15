@@ -1,34 +1,11 @@
 import { GoogleGenAI, Type } from "@google/genai";
-
-export interface AIGenerationInput {
-  jobTitle: string;
-  department: string;
-  experienceLevel: string;
-  employmentType: string;
-  location: string;
-  companyName: string;
-  companyDescription: string;
-  requiredSkills: string[];
-  benefits: string[];
-}
-
-export interface AIGenerationOutput {
-  aboutCompany: string;
-  jobSummary: string;
-  responsibilities: string[];
-  requirements: string[];
-  niceToHave: string[];
-  benefits: string[];
-  interviewQuestions: {
-    type: "Technical" | "Behavioral" | "Scenario";
-    question: string;
-  }[];
-}
+import { AIGenerationOutput } from "../ai.validator.js";
+import { JobRecruitmentInput } from "../jobs.validator.js";
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 export async function generateJobMetadata(
-  input: AIGenerationInput,
+  input: JobRecruitmentInput,
 ): Promise<AIGenerationOutput> {
   const prompt = buildGenerationPrompt(input);
 
@@ -37,7 +14,7 @@ export async function generateJobMetadata(
     contents: prompt,
     config: {
       systemInstruction:
-        "You are an expert Technical Recruiter. Your task is to generate a comprehensive Job Description and Interview Questions based on provided parameters. SYou MUST respond with a raw JSON object matching the exact structure requested, with no markdown formatting tags.",
+        "You are an elite Technical Recruiter. Your absolute directive is to generate a comprehensive Job Description and exactly 15 Interview Questions based on the provided parameters. You MUST strictly follow the 5-5-5 distribution matrix for interview questions. Your response must be a single, raw JSON object matching the requested schema perfectly, with no markdown code blocks or wrapper tags.",
       responseMimeType: "application/json",
       responseSchema: {
         type: Type.OBJECT,
@@ -55,11 +32,11 @@ export async function generateJobMetadata(
               properties: {
                 type: {
                   type: Type.STRING,
-                  enum: ["Technical", "Behavioral", "CultureFit"],
+                  enum: ["Technical", "Behavioral", "Scenario"],
                 },
                 question: { type: Type.STRING },
               },
-              required: ["type", "question"],
+              required: ["type", "questionText"],
             },
           },
         },
@@ -79,7 +56,8 @@ export async function generateJobMetadata(
   return parseAIResponse(response.text);
 }
 
-function buildGenerationPrompt(input: AIGenerationInput): string {
+// Helper functions
+function buildGenerationPrompt(input: JobRecruitmentInput): string {
   return `
     Act as a professional recruiter. Generate a structured job description data based on the following details:
     - Company Name: ${input.companyName}
@@ -99,12 +77,12 @@ function buildGenerationPrompt(input: AIGenerationInput): string {
 
 function parseAIResponse(rawText: string | undefined): AIGenerationOutput {
   if (!rawText) {
-    throw new Error("AI_RESPONSE_EMPTY");
+    throw new Error("AI response empty");
   }
 
   try {
     return JSON.parse(rawText);
   } catch (error) {
-    throw new Error("AI_RETURN_INVALID_JSON_STRUCTURE");
+    throw new Error("AI return invalid json structure");
   }
 }

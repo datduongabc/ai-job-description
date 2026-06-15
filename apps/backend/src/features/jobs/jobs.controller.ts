@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
 import { createAIGeneratedJob } from "./jobs.service.js";
-import { generateJobSchema } from "./jobs.validator.js";
+import { JobRecruitmentSchema } from "./jobs.validator.js";
 
 export async function handleGenerateJob(
   req: Request,
@@ -8,8 +8,8 @@ export async function handleGenerateJob(
   next: NextFunction,
 ): Promise<void> {
   try {
-    // Input validation
-    const parseResult = generateJobSchema.safeParse(req.body);
+    // server validation
+    const parseResult = JobRecruitmentSchema.safeParse(req.body);
 
     if (!parseResult.success) {
       res.status(400).json({
@@ -20,15 +20,18 @@ export async function handleGenerateJob(
       return;
     }
 
-    // Gọi service xử lí bussiness logic
+    // Gọi xuống AI function và xử lí business logic
     const cleanPayload = parseResult.data;
-    const savedJobDescription = await createAIGeneratedJob(cleanPayload);
+    const result = await createAIGeneratedJob(cleanPayload);
+
+    // validate dữ liệu kết quả AI trả về
+    // TO DO HERE
 
     // Đóng gói payload và trả dữ liệu frontend
     res.status(201).json({
       status: "SUCCESS",
       message: "AI generate results successfully",
-      data: savedJobDescription,
+      data: result,
     });
   } catch (error) {
     next(error);

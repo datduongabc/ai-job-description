@@ -26,7 +26,7 @@ const LOCATIONS = Object.values(LocationEnum) as [
   ...LocationEnum[],
 ];
 
-export const generateJobSchema = z.object({
+export const JobRecruitmentSchema = z.object({
   jobTitle: z.string().trim().min(2, "Job title must be at least 2 characters"),
 
   department: z.enum(BACKEND_DEPARTMENT_VALUES, {
@@ -42,7 +42,7 @@ export const generateJobSchema = z.object({
   }),
 
   location: z.enum(LOCATIONS, {
-    message: "Location is not supported within the network",
+    message: "Location is not supported",
   }),
 
   companyName: z
@@ -59,7 +59,7 @@ export const generateJobSchema = z.object({
     .array(z.string().trim())
     .min(1, "At least one required skill is mandatory"),
 
-  benefits: z.array(z.string().trim()).default([]),
+  benefits: z.array(z.string().trim()),
 });
 
-export type JobRecruitmentInput = z.infer<typeof generateJobSchema>;
+export type JobRecruitmentInput = z.infer<typeof JobRecruitmentSchema>;
