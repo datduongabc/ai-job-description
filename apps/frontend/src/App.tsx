@@ -2,41 +2,18 @@ import { useMutation } from "@tanstack/react-query";
 import { Sparkles } from "lucide-react";
 import { useState } from "react";
 import { JobFormInput } from "./features/jobs/JobFormInput";
-import { JobFormOutput } from "./features/jobs/JobFormOutput";
-import type { JobRecruitmentInput } from "./features/jobs/JobSchemas";
-
-export interface JobDescriptionResponse {
-  id: string;
-
-  jobTitle: string;
-  department: string;
-  experienceLevel: string;
-  employmentType: string;
-  location: string;
-
-  companyId: string;
-  requiredSkills: string[];
-  benefits: string[];
-
-  aboutCompanyGenerated: string;
-  jobSummaryGenerated: string;
-  responsibilities: string[];
-  requirementsGenerated: string[];
-  niceToHaveGenerated: string[];
-
-  interviewQuestions: Array<{
-    id: string;
-    type: "Technical" | "Behavioral" | "CultureFit";
-    questionText: string;
-  }>;
-}
+import {
+  JobFormOutput,
+  type JobDescriptionResponse,
+} from "./features/jobs/JobFormOutput";
+import type { jobRecruitmentInput } from "./features/jobs/JobSchemas";
 
 export default function App() {
   const [generatedJob, setGeneratedJob] =
     useState<JobDescriptionResponse | null>(null);
 
   const jobMutation = useMutation({
-    mutationFn: async (formData: JobRecruitmentInput) => {
+    mutationFn: async (formData: jobRecruitmentInput) => {
       const response = await fetch("http://localhost:5000/api/jobs/generate", {
         method: "POST",
         headers: {
@@ -81,11 +58,12 @@ export default function App() {
           onSubmitAction={jobMutation.mutate}
           isSubmitting={jobMutation.isPending}
         />
+
         {/* RIGHT PANEL: Display Generated Result */}
         <JobFormOutput
-        // data={generatedJob}
-        // isLoading={jobMutation.isPending}
-        // error={jobMutation.error?.message || null}
+          data={generatedJob}
+          isLoading={jobMutation.isPending}
+          error={jobMutation.error?.message || null}
         />
       </main>
     </div>

@@ -1,10 +1,10 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState, type KeyboardEvent } from "react";
 import { useForm, useWatch } from "react-hook-form";
-import { jobRecruitmentSchema, type JobRecruitmentInput } from "./JobSchemas";
+import { jobRecruitmentSchema, type jobRecruitmentInput } from "./JobSchemas";
 
 interface JobFormInputProps {
-  onSubmitAction: (data: JobRecruitmentInput) => void;
+  onSubmitAction: (data: jobRecruitmentInput) => void;
   isSubmitting: boolean;
 }
 
@@ -18,7 +18,7 @@ export function JobFormInput({
     control,
     setValue,
     formState: { errors },
-  } = useForm<JobRecruitmentInput>({
+  } = useForm<jobRecruitmentInput>({
     resolver: zodResolver(jobRecruitmentSchema),
     defaultValues: {
       jobTitle: "",
@@ -91,7 +91,7 @@ export function JobFormInput({
     );
   };
 
-  // trả kết quả của input form lên ui
+  // hiện form lên ui
   return (
     <section className="bg-white border border-slate-200 rounded-2xl p-5 lg:p-6 shadow-xs flex flex-col gap-5 sticky xl:top-22 max-h-[calc(100vh-120px)] overflow-y-auto w-full">
       <div className="border-b border-slate-100 pb-3">

@@ -5,7 +5,10 @@ import { LOCATION_VALUES } from "@/enum/locations-enum";
 import { z } from "zod";
 
 export const jobRecruitmentSchema = z.object({
-  jobTitle: z.string().min(2, "Job Title must be at least 2 characters"),
+  jobTitle: z
+    .string()
+    .min(2, "Job Title must be at least 2 characters")
+    .max(15, "Job Title must be maximum 30 characters"),
 
   department: z.enum(DEPARTMENT_VALUES, {
     message: "Please select a valid Department",
@@ -23,15 +26,19 @@ export const jobRecruitmentSchema = z.object({
     message: "Please select a valid Location",
   }),
 
-  companyName: z.string().min(2, "Company Name must be at least 2 characters"),
+  companyName: z
+    .string()
+    .min(2, "Company Name must be at least 2 characters")
+    .max(15, "Job Title must be maximum 100 characters"),
 
   companyDescription: z
     .string()
-    .min(2, "Company Description must be at least 2 characters"),
+    .min(2, "Company Description must be at least 2 characters")
+    .max(100, "Job Title must be maximum 100 characters"),
 
-  requiredSkills: z.array(z.string()).min(1, "Please add at least 1 skill"), // tối thiểu 1 skills
+  requiredSkills: z.array(z.string()).min(1, "Please add at least 1 skill"), // tối thiểu 1 skills, AI sẽ sinh thêm at least 5
 
   benefits: z.array(z.string()), // optinal field
 });
 
-export type JobRecruitmentInput = z.infer<typeof jobRecruitmentSchema>;
+export type jobRecruitmentInput = z.infer<typeof jobRecruitmentSchema>;

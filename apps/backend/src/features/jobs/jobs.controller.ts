@@ -1,4 +1,5 @@
 import type { NextFunction, Request, Response } from "express";
+import { aiGenerationOutputSchema } from "./ai.validator.js";
 import { createAIGeneratedJob } from "./jobs.service.js";
 import { JobRecruitmentSchema } from "./jobs.validator.js";
 
@@ -25,13 +26,24 @@ export async function handleGenerateJob(
     const result = await createAIGeneratedJob(cleanPayload);
 
     // validate dữ liệu kết quả AI trả về
-    // TO DO HERE
+    const aiParseResult = aiGenerationOutputSchema.safeParse(result);
+
+    if (!aiParseResult.success) {
+      res.status(502).json({
+        status: "FAIL",
+        message: "AI service returned json structure incorrectly.",
+        errors: aiParseResult.error.flatten().fieldErrors,
+      });
+      return;
+    }
+
+    const validatedAIOutput = aiParseResult.data;
 
     // Đóng gói payload và trả dữ liệu frontend
     res.status(201).json({
       status: "SUCCESS",
       message: "AI generate results successfully",
-      data: result,
+      data: validatedAIOutput,
     });
   } catch (error) {
     next(error);
