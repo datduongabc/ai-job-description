@@ -34,7 +34,7 @@ export async function generateJobMetadata(
                   type: Type.STRING,
                   enum: ["Technical", "Behavioral", "Scenario"],
                 },
-                question: { type: Type.STRING },
+                questionText: { type: Type.STRING },
               },
               required: ["type", "questionText"],
             },

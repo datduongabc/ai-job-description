@@ -1,11 +1,13 @@
 import { PrismaClient } from "@prisma/client";
+import { aiGenerationOutputSchema } from "./ai.validator.js";
 import { JobRecruitmentInput } from "./jobs.validator.js";
 import { generateJobMetadata } from "./providers/gemini.provider.js";
 
 const prisma = new PrismaClient();
 
 export async function createAIGeneratedJob(payload: JobRecruitmentInput) {
-  const aiOutput = await generateJobMetadata(payload);
+  const rawAiOutput = await generateJobMetadata(payload);
+  const aiOutput = aiGenerationOutputSchema.parse(rawAiOutput);
 
   return await prisma.$transaction(async (tx) => {
     // Kiểm tra đã có công ty này trong table companies
@@ -31,6 +33,9 @@ export async function createAIGeneratedJob(payload: JobRecruitmentInput) {
         employmentType: payload.employmentType,
         location: payload.location,
 
+        requiredSkills: payload.requiredSkills,
+        benefits: payload.benefits,
+
         companyId: company.id,
 
         aboutCompanyGenerated: aiOutput.aboutCompany,
@@ -38,20 +43,33 @@ export async function createAIGeneratedJob(payload: JobRecruitmentInput) {
         responsibilities: aiOutput.responsibilities,
         requirementsGenerated: aiOutput.requirements,
         niceToHaveGenerated: aiOutput.niceToHave,
+
+        // Lưu kết quả vào bảng interview_questions
+        interviewQuestions: {
+          create: aiOutput.interviewQuestions.map((q) => ({
+            type: q.type,
+            questionText: q.questionText,
+          })),
+        },
+      },
+      include: {
+        interviewQuestions: true,
       },
     });
 
-    // Lưu kết quả vào bảng interview_questions
-    if (aiOutput.interviewQuestions && aiOutput.interviewQuestions.length > 0) {
-      await tx.interviewQuestion.createMany({
-        data: aiOutput.interviewQuestions.map((q) => ({
-          jobDescriptionId: newJob.id,
-          type: q.type,
-          questionText: q.questionText,
-        })),
-      });
-    }
+    return {
+      aboutCompany: aiOutput.aboutCompany,
+      jobSummary: aiOutput.jobSummary,
+      responsibilities: aiOutput.responsibilities,
+      requirements: aiOutput.requirements,
+      niceToHave: aiOutput.niceToHave,
+      benefits: aiOutput.benefits,
 
-    return newJob;
+      interviewQuestions: newJob.interviewQuestions.map((q) => ({
+        id: q.id,
+        type: q.type,
+        questionText: q.questionText,
+      })),
+    };
   });
 }
