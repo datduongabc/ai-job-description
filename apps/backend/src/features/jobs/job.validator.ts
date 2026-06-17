@@ -6,7 +6,7 @@ import {
 } from "@prisma/client";
 import { z } from "zod";
 
-const BACKEND_DEPARTMENT_VALUES = Object.values(DepartmentEnum) as [
+const DEPARTMENTS = Object.values(DepartmentEnum) as [
   DepartmentEnum,
   ...DepartmentEnum[],
 ];
@@ -27,37 +27,43 @@ const LOCATIONS = Object.values(LocationEnum) as [
 ];
 
 export const JobRecruitmentSchema = z.object({
-  jobTitle: z.string().trim().min(2, "Job title must be at least 2 characters"),
+  jobTitle: z
+    .string()
+    .trim()
+    .min(2, "[BE] Job title must be at least 2 characters"),
+  // .max(50, "[BE] Job Title must be maximum 50 characters"),
 
-  department: z.enum(BACKEND_DEPARTMENT_VALUES, {
-    message: "Invalid department category",
+  department: z.enum(DEPARTMENTS, {
+    message: "[BE] Invalid department category",
   }),
 
   experienceLevel: z.enum(EXPERIENCE_LEVELS, {
-    message: "Invalid experience level classification",
+    message: "[BE] Invalid experience level classification",
   }),
 
   employmentType: z.enum(EMPLOYMENT_TYPES, {
-    message: "Invalid employment type specified",
+    message: "[BE] Invalid employment type specified",
   }),
 
   location: z.enum(LOCATIONS, {
-    message: "Location is not supported",
+    message: "[BE] Location is not supported",
   }),
 
   companyName: z
     .string()
     .trim()
-    .min(2, "Company name must be at least 2 characters"),
+    .min(2, "[BE] Company name must be at least 2 characters"),
+  // .max(50, "[BE] Company Name must be maximum 50 characters"),
 
   companyDescription: z
     .string()
     .trim()
-    .min(2, "Company description must be at least 2 characters"),
+    .min(2, "[BE] Company description must be at least 2 characters"),
+  // .max(100, "[BE] Company Description must be maximum 100 characters"),
 
   requiredSkills: z
     .array(z.string().trim())
-    .min(1, "At least one required skill is mandatory"),
+    .min(1, "[BE] At least one required skill is mandatory"),
 
   benefits: z.array(z.string().trim()),
 });

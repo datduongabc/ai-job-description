@@ -80,55 +80,32 @@ enum QuestionTypeEnum {
   Scenario
 }
 
-model Company {
-  id          String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  name        String           @unique @db.VarChar(255)
-  description String           @db.Text
-  jobs        JobDescription[]
-  createdAt   DateTime         @default(now()) @map("created_at")
-  updatedAt   DateTime         @updatedAt @map("updated_at")
-
-  @@map("companies")
-}
-
 model JobDescription {
   id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
 
-  // Recruitment Information
+  // recruiment fields
   jobTitle        String         @map("job_title") @db.VarChar(255)
   department      DepartmentEnum
   experienceLevel ExpLevelEnum   @map("experience_level")
   employmentType  EmpTypeEnum    @map("employment_type")
   location        LocationEnum
-  companyId       String         @map("company_id") @db.Uuid
-  company         Company        @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  requiredSkills  String[]       @map("required_skills")
-  benefits        String[]       @default([])
 
-  // AI Generated Result
+  companyName        String @map("company_name") @db.VarChar(255)
+  companyDescription String @map("company_description") @db.Text
+
+  requiredSkills String[] @map("required_skills")
+  benefits       String[] @default([])
+
+  // AI results
   aboutCompanyGenerated String   @map("about_company_generated") @db.Text
   jobSummaryGenerated   String   @map("job_summary_generated") @db.Text
-  responsibilities      String[] @map("responsibilities") // at least 5
-  requirementsGenerated String[] @map("requirements_generated") // at least 5
-  niceToHaveGenerated   String[] @map("nice_to_have_generated") // at least 3
+  responsibilities      String[] @map("responsibilities")
+  requirementsGenerated String[] @map("requirements_generated")
+  niceToHaveGenerated   String[] @map("nice_to_have_generated")
+  interviewQuestions    Json     @map("interview_questions") @db.JsonB
 
-  interviewQuestions InterviewQuestion[]
+  createdAt DateTime @default(now()) @map("created_at")
 
-  createdAt DateTime  @default(now()) @map("created_at")
-  updatedAt DateTime  @updatedAt @map("updated_at")
-  deletedAt DateTime? @map("deleted_at")
-
+  @@index([companyName])
   @@map("job_descriptions")
-}
-
-model InterviewQuestion {
-  id               String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  jobDescriptionId String         @map("job_description_id") @db.Uuid
-  jobDescription   JobDescription @relation(fields: [jobDescriptionId], references: [id], onDelete: Cascade)
-
-  type         QuestionTypeEnum
-  questionText String           @map("question_text") @db.Text
-  createdAt    DateTime         @default(now()) @map("created_at")
-
-  @@map("interview_questions")
 }

@@ -1,12 +1,15 @@
 import { GoogleGenAI, Type } from "@google/genai";
-import { AIGenerationOutput } from "../ai.validator.js";
-import { JobRecruitmentInput } from "../jobs.validator.js";
+import {
+  aIGenerationOutput,
+  aiGenerationSchema,
+} from "../../ai/ai.validator.js";
+import { JobRecruitmentInput } from "../job.validator.js";
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
-export async function generateJobMetadata(
+export async function generateJobOutput(
   input: JobRecruitmentInput,
-): Promise<AIGenerationOutput> {
+): Promise<aIGenerationOutput> {
   const prompt = buildGenerationPrompt(input);
 
   const response = await ai.models.generateContent({
@@ -14,7 +17,7 @@ export async function generateJobMetadata(
     contents: prompt,
     config: {
       systemInstruction:
-        "You are an elite Technical Recruiter. Your absolute directive is to generate a comprehensive Job Description and exactly 15 Interview Questions based on the provided parameters. You MUST strictly follow the 5-5-5 distribution matrix for interview questions. Your response must be a single, raw JSON object matching the requested schema perfectly, with no markdown code blocks or wrapper tags.",
+        "You are an elite Technical Recruiter. Your absolute directive is to generate a comprehensive Job Description and exactly 10 Interview Questions based on the provided parameters. You MUST strictly follow the 5-3-2 distribution matrix for interview questions (5 Technical, 3 Behavioral, 2 Scenario). Your response must be a single, raw JSON object matching the requested schema perfectly, with no markdown code blocks or wrapper tags.",
       responseMimeType: "application/json",
       responseSchema: {
         type: Type.OBJECT,
@@ -53,36 +56,53 @@ export async function generateJobMetadata(
     },
   });
 
-  return parseAIResponse(response.text);
+  return parseAndValidateAIResponse(response.text);
 }
 
-// Helper functions
+// Helper functions: create prompt for instructing AI
 function buildGenerationPrompt(input: JobRecruitmentInput): string {
   return `
-    Act as a professional recruiter. Generate a structured job description data based on the following details:
-    - Company Name: ${input.companyName}
-    - Company Context: ${input.companyDescription}
-    - Target Role: ${input.jobTitle} (Department: ${input.department})
-    - Metadata: ${input.employmentType}, ${input.experienceLevel}, Location: ${input.location}
-    - Mandatory Skills provided: ${input.requiredSkills.join(", ")}
-    - Core Benefits offered: ${input.benefits.join(", ")}
+    Act as a professional recruiter. Generate a structured JSON object based on the following exact rules for each field:
 
-    Strict Constraints for the JSON fields:
-    1. 'responsibilities': Must contain at least 5 highly actionable.
-    2. 'requirements': Must expand the provided Mandatory Skills into at least 5 professional requirements.
-    3. 'niceToHave': Must infer and generate at least 3 advanced, highly relevant bonus skills or experiences.
-    4. 'interviewQuestions': Generate exactly 5 relevant questions about Technical types, 3 relevant questions about Behavioral types, and 2 relevant questions about Scenario types.
+    - Raw Inputs:
+      * aboutCompany: ${input.companyName} + ${input.companyDescription}
+      * jobSummary: ${input.jobTitle} + ${input.department} + ${input.experienceLevel} + ${input.employmentType} + ${input.location}
+      * responsibilities:
+      * requirements: [${input.requiredSkills.join(", ")}]
+      * niceToHave:
+      * benefits: [${input.benefits.join(", ")}]
+      * interviewQuestions:
+
+    - Mandatory Field Mapping Rules for Output JSON:
+      1. 'aboutCompany': Formulate this text by combining 'companyName' + 'companyDescription' and apply professional recruitment refinements or stylistic polish.
+      2. 'jobSummary': Formulate this text by combining 'jobTitle' + 'department' + 'experienceLevel' + 'employmentType' + 'location' into a cohesive executive position overview sentence or paragraph.
+      3. 'responsibilities': AI must generate this section completely from scratch based on the job title. It must contain at least 5.
+      4. 'requirements': Take the provided 'requiredSkills' array as the base, include them, and AI must generate additional professional requirements, ensuring the final array length is at least 5.
+      5. 'niceToHave': AI must generate this section completely from scratch. It must contain at least 3 advanced, highly relevant bonus skills or experiences.
+      6. 'benefits': Copy the provided 'benefits' input array exactly as sent from the frontend. AI MUST NOT generate, add, modify, or extend any content within this array.
+      7. '': Generate an array of objects containing exactly 10 items. The distribution must be strictly: exactly 5 questions with type "Technical", exactly 3 questions with type "Behavioral", and exactly 2 questions with type "Scenario". Each questionText must be contextualized to the job title.
   `;
 }
 
-function parseAIResponse(rawText: string | undefined): AIGenerationOutput {
+// Helper functions: validate the json structure of AI
+function parseAndValidateAIResponse(
+  rawText: string | undefined,
+): aIGenerationOutput {
   if (!rawText) {
-    throw new Error("AI response empty");
+    throw new Error("[AI] AI response empty content");
+  }
+
+  let parsedData: unknown;
+
+  try {
+    parsedData = JSON.parse(rawText);
+  } catch {
+    throw new Error("[AI] AI generated incorrect json format");
   }
 
   try {
-    return JSON.parse(rawText);
-  } catch (error) {
-    throw new Error("AI return invalid json structure");
+    return aiGenerationSchema.parse(parsedData);
+  } catch {
+    throw new Error("[AI] AI generated incorrect config output");
   }
 }

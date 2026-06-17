@@ -1,23 +1,22 @@
 import type { NextFunction, Request, Response } from "express";
-import { ZodError, ZodTypeAny } from "zod";
+import { ZodError, ZodType } from "zod";
 
-export const validateBody = (schema: ZodTypeAny) => {
-  return async (
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ): Promise<void> => {
+export const validateBody = (schema: ZodType) => {
+  return (req: Request, res: Response, next: NextFunction): void => {
     try {
-      const parsedData = await schema.parseAsync(req.body);
+      const parsedData = schema.safeParse(req.body);
+
       req.body = parsedData;
+
       return next();
     } catch (error) {
       if (error instanceof ZodError) {
         res.status(400).json({
           status: "FAIL",
-          message: "Data bypass middleware failed.",
+          message: "Invalid input request. Please try again.",
           errors: error.flatten().fieldErrors,
         });
+
         return;
       }
 

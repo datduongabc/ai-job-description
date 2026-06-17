@@ -1,7 +1,7 @@
 import cors from "cors";
 import "dotenv/config";
 import express from "express";
-import { jobRoutes } from "./features/jobs/jobs.routes.js";
+import { jobRoutes } from "./features/jobs/job.routes.js";
 
 const app = express();
 
@@ -12,7 +12,7 @@ app.use(
     credentials: true,
   }),
 );
-app.use(express.json({ limit: "10mb" }));
+app.use(express.json({ limit: "5mb" }));
 
 app.use("/api/jobs", jobRoutes);
 
