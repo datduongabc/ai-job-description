@@ -1,27 +1,12 @@
 import { useMutation } from "@tanstack/react-query";
 import { Sparkles } from "lucide-react";
+import { generateJobDescription } from "./api/jobAPI";
 import { JobFormInput } from "./features/jobs/JobFormInput";
 import { JobFormOutput } from "./features/jobs/JobFormOutput";
-import type { jobRecruitmentInput } from "./features/jobs/JobSchemas";
 
 export default function App() {
   const jobMutation = useMutation({
-    mutationFn: async (formData: jobRecruitmentInput) => {
-      const response = await fetch("http://localhost:5000/api/jobs/generate", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-
-      if (!response.ok) {
-        throw new Error("Internet error happened.");
-      }
-
-      const json = await response.json();
-      return json.data;
-    },
+    mutationFn: generateJobDescription,
     onError: (error) => {
       console.error(error.message);
     },

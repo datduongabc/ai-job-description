@@ -1,5 +1,5 @@
+import { TagInput } from "@/components/TagInput";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState, type KeyboardEvent } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { jobRecruitmentSchema, type jobRecruitmentInput } from "./JobSchemas";
 
@@ -36,62 +36,26 @@ export function JobFormInput({
   const requiredSkills = useWatch({ control, name: "requiredSkills" }) ?? [];
   const benefits = useWatch({ control, name: "benefits" }) ?? [];
 
-  const [skillInput, setSkillInput] = useState("");
-  const [benefitInput, setBenefitInput] = useState("");
-
-  // add skills
-  const handleSkillKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-
-      const trimmed = skillInput.trim();
-
-      if (trimmed && !requiredSkills.includes(trimmed)) {
-        setValue("requiredSkills", [...requiredSkills, trimmed], {
-          shouldValidate: true, // zod validate lại khi thêm skills mới
-        });
-
-        setSkillInput("");
-      }
-    }
+  const handleAddTag = (
+    field: "requiredSkills" | "benefits",
+    currentTags: string[],
+    newTag: string,
+  ) => {
+    setValue(field, [...currentTags, newTag], { shouldValidate: true });
   };
 
-  // add benifits
-  const handleBenefitKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-
-      const trimmed = benefitInput.trim();
-
-      if (trimmed && !benefits.includes(trimmed)) {
-        setValue("benefits", [...benefits, trimmed], {
-          shouldValidate: true, // zod validate lại khi thêm benifits mới
-        });
-
-        setBenefitInput("");
-      }
-    }
-  };
-
-  // remove skills
-  const removeSkill = (indexToRemove: number) => {
+  const handleRemoveTag = (
+    field: "requiredSkills" | "benefits",
+    currentTags: string[],
+    indexToRemove: number,
+  ) => {
     setValue(
-      "requiredSkills",
-      requiredSkills.filter((_, idx) => idx !== indexToRemove),
+      field,
+      currentTags.filter((_, idx) => idx !== indexToRemove),
       { shouldValidate: true },
     );
   };
 
-  // remove benifits
-  const removeBenefit = (indexToRemove: number) => {
-    setValue(
-      "benefits",
-      benefits.filter((_, idx) => idx !== indexToRemove),
-      { shouldValidate: true },
-    );
-  };
-
-  // hiện form lên ui
   return (
     <section className="bg-white border border-slate-200 rounded-2xl p-5 lg:p-6 shadow-xs flex flex-col gap-5 sticky xl:top-22 max-h-[calc(100vh-120px)] overflow-y-auto w-full">
       <div className="border-b border-slate-100 pb-3">
@@ -223,74 +187,30 @@ export function JobFormInput({
         </div>
 
         {/* Required Skills */}
-        <div className="flex flex-col">
-          <label className="form-label">Required Skills</label>
-          <div className="stacked-tag-box">
-            <div className="flex flex-wrap gap-2 min-h-7">
-              {requiredSkills.map((skill, index) => (
-                <span key={skill + index} className="tag-badge-indigo">
-                  {skill}
-                  <button
-                    type="button"
-                    className="tag-close-btn"
-                    onClick={() => removeSkill(index)}
-                  >
-                    &times;
-                  </button>
-                </span>
-              ))}
-            </div>
-            <input
-              type="text"
-              value={skillInput}
-              onChange={(e) => setSkillInput(e.target.value)}
-              onKeyDown={handleSkillKeyDown}
-              placeholder="Type a skill and press Enter..."
-              className="tag-input-field"
-            />
-          </div>
-          {errors.requiredSkills && (
-            <p className="text-red-500 text-xs mt-1">
-              {errors.requiredSkills.message}
-            </p>
-          )}
-        </div>
+        <TagInput
+          label="Required Skills"
+          tags={requiredSkills}
+          placeholder="Type a skill and press Enter..."
+          badgeClass="tag-badge-indigo"
+          error={errors.requiredSkills?.message}
+          onAdd={(tag) => handleAddTag("requiredSkills", requiredSkills, tag)}
+          onRemove={(idx) =>
+            handleRemoveTag("requiredSkills", requiredSkills, idx)
+          }
+        />
 
         {/* Benefits */}
-        <div className="flex flex-col">
-          <label className="form-label">Benefits</label>
-          <div className="stacked-tag-box">
-            <div className="flex flex-wrap gap-2 min-h-7">
-              {benefits.map((benefit, index) => (
-                <span key={benefit + index} className="tag-badge-emerald">
-                  {benefit}
-                  <button
-                    type="button"
-                    className="tag-close-btn"
-                    onClick={() => removeBenefit(index)}
-                  >
-                    &times;
-                  </button>
-                </span>
-              ))}
-            </div>
-            <input
-              type="text"
-              value={benefitInput}
-              onChange={(e) => setBenefitInput(e.target.value)}
-              onKeyDown={handleBenefitKeyDown}
-              placeholder="Type a benefit and press Enter..."
-              className="tag-input-field"
-            />
-          </div>
-          {errors.benefits && (
-            <p className="text-red-500 text-xs mt-1">
-              {errors.benefits.message}
-            </p>
-          )}
-        </div>
+        <TagInput
+          label="Benefits"
+          tags={benefits}
+          placeholder="Type a benefit and press Enter..."
+          badgeClass="tag-badge-emerald"
+          error={errors.benefits?.message}
+          onAdd={(tag) => handleAddTag("benefits", benefits, tag)}
+          onRemove={(idx) => handleRemoveTag("benefits", benefits, idx)}
+        />
 
-        {/* SUBMIT BUTTON */}
+        {/* SUBMIT */}
         <button
           type="submit"
           disabled={isSubmitting}

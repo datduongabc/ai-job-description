@@ -31,7 +31,6 @@ export const JobRecruitmentSchema = z.object({
     .string()
     .trim()
     .min(2, "[BE] Job title must be at least 2 characters"),
-  // .max(50, "[BE] Job Title must be maximum 50 characters"),
 
   department: z.enum(DEPARTMENTS, {
     message: "[BE] Invalid department category",
@@ -53,13 +52,11 @@ export const JobRecruitmentSchema = z.object({
     .string()
     .trim()
     .min(2, "[BE] Company name must be at least 2 characters"),
-  // .max(50, "[BE] Company Name must be maximum 50 characters"),
 
   companyDescription: z
     .string()
     .trim()
     .min(2, "[BE] Company description must be at least 2 characters"),
-  // .max(100, "[BE] Company Description must be maximum 100 characters"),
 
   requiredSkills: z
     .array(z.string().trim().min(2, "[BE] Invalid input skill name"))
