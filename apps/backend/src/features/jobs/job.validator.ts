@@ -62,7 +62,7 @@ export const JobRecruitmentSchema = z.object({
     .array(z.string().trim().min(2, "[BE] Invalid input skill name"))
     .min(1, "[BE] At least one required skill is mandatory"),
 
-  benefits: z.array(z.string().trim().min(2, "[BE] Invalid input benifits")),
+  benefits: z.array(z.string().trim().min(2, "[BE] Invalid input benefits")),
 });
 
 export type JobRecruitmentInput = z.infer<typeof JobRecruitmentSchema>;

@@ -1,6 +1,6 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import {
-  aIGenerationOutput,
+  AIGenerationOutput,
   aiGenerationSchema,
 } from "../../ai/ai.validator.js";
 import { JobRecruitmentInput } from "../job.validator.js";
@@ -9,7 +9,7 @@ const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 export async function generateJobOutput(
   input: JobRecruitmentInput,
-): Promise<aIGenerationOutput> {
+): Promise<AIGenerationOutput> {
   const prompt = buildGenerationPrompt(input);
 
   const response = await ai.models.generateContent({
@@ -80,14 +80,14 @@ function buildGenerationPrompt(input: JobRecruitmentInput): string {
       4. 'requirements': Take the provided 'requiredSkills' array as the base, include them, and AI must generate additional professional requirements, ensuring the final array length is at least 5.
       5. 'niceToHave': AI must generate this section completely from scratch. It must contain at least 3 advanced, highly relevant bonus skills or experiences.
       6. 'benefits': Copy the provided 'benefits' input array exactly as sent from the frontend. AI MUST NOT generate, add, modify, or extend any content within this array.
-      7. '': Generate an array of objects containing exactly 10 items. The distribution must be strictly: exactly 5 questions with type "Technical", exactly 3 questions with type "Behavioral", and exactly 2 questions with type "Scenario". Each questionText must be contextualized to the job title.
+      7. 'interviewQuestions': Generate an array of objects containing exactly 10 items. The distribution must be strictly: exactly 5 questions with type "Technical", exactly 3 questions with type "Behavioral", and exactly 2 questions with type "Scenario". Each questionText must be contextualized to the job title.
   `;
 }
 
 // Helper functions: validate the json structure of AI
 function parseAndValidateAIResponse(
   rawText: string | undefined,
-): aIGenerationOutput {
+): AIGenerationOutput {
   if (!rawText) {
     throw new Error("[AI] AI response empty content");
   }

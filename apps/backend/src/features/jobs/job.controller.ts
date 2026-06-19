@@ -1,5 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
 import { createAIGeneratedJob } from "./job.service.js";
+import { JobRecruitmentInput } from "./job.validator.js";
 
 export async function handleGenerateJob(
   req: Request,
@@ -8,7 +9,7 @@ export async function handleGenerateJob(
 ): Promise<void> {
   try {
     // Gọi xuống AI function và xử lí business logic
-    const cleanPayload = req.body;
+    const cleanPayload = req.body as JobRecruitmentInput;
     const result = await createAIGeneratedJob(cleanPayload);
 
     // Đóng gói payload và trả dữ liệu frontend
