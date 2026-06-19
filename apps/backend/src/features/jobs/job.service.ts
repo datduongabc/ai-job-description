@@ -8,8 +8,6 @@ export async function createAIGeneratedJob(payload: JobRecruitmentInput) {
   try {
     const aiOutput = await generateJobOutput(payload);
 
-    console.log(aiOutput);
-
     const savedJob = await prisma.jobDescription.create({
       data: {
         // input part
@@ -37,24 +35,14 @@ export async function createAIGeneratedJob(payload: JobRecruitmentInput) {
 
     return savedJob;
   } catch (error) {
-    console.error("====== [CRITICAL DATABASE WRITE FAILURE] ======");
-    console.error(error);
-    console.error("===============================================");
-
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      throw new Error(
-        `[Database Error] Mã lỗi: ${error.code} - Thao tác dữ liệu thất bại.`,
-      );
+      throw new Error(`[DB] Error: ${error.code} - Failed.`);
     }
 
     if (error instanceof Prisma.PrismaClientValidationError) {
-      throw new Error(
-        "[Database Validation] Dữ liệu truyền vào sai cấu trúc so với schema.prisma.",
-      );
+      throw new Error("[DB] Invalid input structure.");
     }
 
-    throw new Error(
-      "Lưu dữ liệu vào cơ sở dữ liệu thất bại do lỗi hệ thống hạ tầng.",
-    );
+    throw new Error("Save data into database unsuccessfully.");
   }
 }

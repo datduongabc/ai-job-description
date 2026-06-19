@@ -1,26 +1,22 @@
 import type { NextFunction, Request, Response } from "express";
-import { ZodError, ZodType } from "zod";
+import { ZodType } from "zod";
 
 export const validateBody = (schema: ZodType) => {
   return (req: Request, res: Response, next: NextFunction): void => {
-    try {
-      const parsedData = schema.safeParse(req.body);
+    const parsedData = schema.safeParse(req.body);
 
-      req.body = parsedData;
+    if (!parsedData.success) {
+      res.status(400).json({
+        status: "FAIL",
+        message: "Invalid input request. Please try again.",
+        errors: parsedData.error.flatten().fieldErrors,
+      });
 
-      return next();
-    } catch (error) {
-      if (error instanceof ZodError) {
-        res.status(400).json({
-          status: "FAIL",
-          message: "Invalid input request. Please try again.",
-          errors: error.flatten().fieldErrors,
-        });
-
-        return;
-      }
-
-      return next(error);
+      return;
     }
+
+    req.body = parsedData.data;
+
+    return next();
   };
 };

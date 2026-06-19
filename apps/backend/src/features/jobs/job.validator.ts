@@ -62,10 +62,10 @@ export const JobRecruitmentSchema = z.object({
   // .max(100, "[BE] Company Description must be maximum 100 characters"),
 
   requiredSkills: z
-    .array(z.string().trim())
+    .array(z.string().trim().min(2, "[BE] Invalid input skill name"))
     .min(1, "[BE] At least one required skill is mandatory"),
 
-  benefits: z.array(z.string().trim()),
+  benefits: z.array(z.string().trim().min(2, "[BE] Invalid input benifits")),
 });
 
 export type JobRecruitmentInput = z.infer<typeof JobRecruitmentSchema>;

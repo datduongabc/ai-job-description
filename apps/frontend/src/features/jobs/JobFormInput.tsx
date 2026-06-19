@@ -96,7 +96,7 @@ export function JobFormInput({
     <section className="bg-white border border-slate-200 rounded-2xl p-5 lg:p-6 shadow-xs flex flex-col gap-5 sticky xl:top-22 max-h-[calc(100vh-120px)] overflow-y-auto w-full">
       <div className="border-b border-slate-100 pb-3">
         <h2 className="text-sm font-bold text-slate-800 uppercase tracking-wider">
-          Recruitment Information
+          Information
         </h2>
       </div>
 

@@ -1,17 +1,10 @@
 import { useMutation } from "@tanstack/react-query";
 import { Sparkles } from "lucide-react";
-import { useState } from "react";
 import { JobFormInput } from "./features/jobs/JobFormInput";
-import {
-  JobFormOutput,
-  type JobDescriptionResponse,
-} from "./features/jobs/JobFormOutput";
+import { JobFormOutput } from "./features/jobs/JobFormOutput";
 import type { jobRecruitmentInput } from "./features/jobs/JobSchemas";
 
 export default function App() {
-  const [generatedJob, setGeneratedJob] =
-    useState<JobDescriptionResponse | null>(null);
-
   const jobMutation = useMutation({
     mutationFn: async (formData: jobRecruitmentInput) => {
       const response = await fetch("http://localhost:5000/api/jobs/generate", {
@@ -28,9 +21,6 @@ export default function App() {
 
       const json = await response.json();
       return json.data;
-    },
-    onSuccess: (data) => {
-      setGeneratedJob(data);
     },
     onError: (error) => {
       console.error(error.message);
@@ -61,9 +51,9 @@ export default function App() {
 
         {/* RIGHT PANEL: Display Generated Result */}
         <JobFormOutput
-          data={generatedJob}
+          data={jobMutation.data ?? null}
           isLoading={jobMutation.isPending}
-          error={jobMutation.error?.message || null}
+          error={jobMutation.error?.message ?? null}
         />
       </main>
     </div>
