@@ -1,10 +1,6 @@
 import cors from "cors";
 import "dotenv/config";
-import express, {
-  type NextFunction,
-  type Request,
-  type Response,
-} from "express";
+import express, { type NextFunction, type Request, type Response } from "express";
 import rateLimit from "express-rate-limit";
 import helmet from "helmet";
 import { jobRoutes } from "./features/jobs/job.routes.js";
@@ -33,11 +29,7 @@ app.use("/api/jobs", jobRoutes);
 
 // global error handler
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-  console.error("[Global Error]:", err.message);
-  res.status(500).json({
-    status: "ERROR",
-    message: err.message || "Internal Server Error",
-  });
+  res.status(500).json({ message: err.message });
 });
 
 app.listen(process.env.BACKEND_PORT, () => {

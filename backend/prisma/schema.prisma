@@ -1,0 +1,104 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  // directUrl = env("DIRECT_URL")
+}
+
+model JobDescription {
+  id                    String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  jobTitle              String         @map("job_title") @db.VarChar(255)
+  department            DepartmentEnum
+  experienceLevel       ExpLevelEnum   @map("experience_level")
+  employmentType        EmpTypeEnum    @map("employment_type")
+  location              LocationEnum
+  requiredSkills        String[]       @map("required_skills")
+  benefits              String[]       @default([])
+  aboutCompanyGenerated String         @map("about_company_generated")
+  jobSummaryGenerated   String         @map("job_summary_generated")
+  responsibilities      String[]       @map("responsibilities")
+  requirementsGenerated String[]       @map("requirements_generated")
+  niceToHaveGenerated   String[]       @map("nice_to_have_generated")
+  createdAt             DateTime       @default(now()) @map("created_at")
+  companyDescription    String         @map("company_description")
+  companyName           String         @map("company_name") @db.VarChar(255)
+  interviewQuestions    Json           @map("interview_questions")
+
+  @@index([companyName])
+  @@map("job_descriptions")
+}
+
+enum DepartmentEnum {
+  Engineering
+  Product
+  Design
+  Data
+  QA
+  DevOps
+  Security
+}
+
+enum EmpTypeEnum {
+  FullTime
+  PartTime
+  Contract
+  Freelance
+  Internship
+}
+
+enum ExpLevelEnum {
+  Intern
+  Fresher
+  Junior
+  MidLevel
+  Senior
+  Leader
+  Manager
+}
+
+enum LocationEnum {
+  HaNoi
+  HoChiMinh
+  HaiPhong
+  DaNang
+  Hue
+  CanTho
+  ThaiNguyen
+  PhuTho
+  LaoCai
+  TuyenQuang
+  LaiChau
+  DienBien
+  SonLa
+  QuangNinh
+  HungYen
+  NinhBinh
+  ThanhHoa
+  NgheAn
+  HaTinh
+  QuangBinh
+  QuangTri
+  QuangNam
+  QuangNgai
+  KhanhHoa
+  GiaLai
+  DakLak
+  LamDong
+  DongNai
+  BaRiaVungTau
+  TayNinh
+  LongAn
+  DongThap
+  AnGiang
+  KienGiang
+  CaMau
+}
+
+enum QuestionTypeEnum {
+  Technical
+  Behavioral
+  Scenario
+}

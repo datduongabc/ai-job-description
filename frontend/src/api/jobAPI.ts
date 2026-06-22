@@ -1,7 +1,7 @@
 import type { jobRecruitmentInput } from "../features/jobs/JobSchemas";
 
 export const generateJobDescription = async (formData: jobRecruitmentInput) => {
-  const response = await fetch("http://localhost:5000/api/jobs/generate", {
+  const response = await fetch(import.meta.env.VITE_API_GENERATE_JOB_DESCRIPTION, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

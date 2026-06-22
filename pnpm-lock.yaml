@@ -205,16 +205,9 @@ settings:
 
 importers:
 
-  .:
-    devDependencies:
-      '@types/node':
-        specifier: ^25.9.3
-        version: 25.9.3
-      typescript:
-        specifier: ^6.0.3
-        version: 6.0.3
+  .: {}
 
-  apps/backend:
+  backend:
     dependencies:
       '@google/genai':
         specifier: ^2.8.0
@@ -257,7 +250,7 @@ importers:
         specifier: ^4.22.4
         version: 4.22.4
 
-  apps/frontend:
+  frontend:
     dependencies:
       '@fontsource-variable/inter':
         specifier: ^5.2.8
